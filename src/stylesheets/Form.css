@@ -1,0 +1,13 @@
+#radioSelection {
+    padding: 1% 0;
+}
+
+#radioSelection label {
+    padding-left: .5%;
+    padding-right: 1px;
+}
+
+#radioSelection input {
+    padding-right: .5%;
+    padding-left: 1px;
+}
