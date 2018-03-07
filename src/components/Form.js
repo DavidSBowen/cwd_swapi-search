@@ -6,14 +6,15 @@ class Form extends Component {
     constructor() {
         super();
         this.state = {
-            searchValue: '',
-            radioValue: ''
+            characteristics: {},
+            status: '',
+            selectedElement: '',
+            searchField: ''
         }
     }
 
-    search_button_click() {
+    search_button_click = () => {
         let searchField = document.getElementById('searchField').value;
-        console.log(searchField);
         let radioElements = document.getElementsByName('selection');
         let selectedElement = '';
 
@@ -22,18 +23,44 @@ class Form extends Component {
                 selectedElement = radioElements[i].value;
             }
         }
-        this.setState({ searchValue: selectedElement })
+
+        let link = this.getLink(searchField, selectedElement);
+
+        this.retrieveData(link);
+    }
+
+    retrieveData = (link) => {
+        console.log(link);
+        fetch(link)
+            .then((response) => {
+                if (response.status >= 200 && response.status < 400) {
+                    return response.json();
+                }
+            }).then((jsonData) => {
+                if (!jsonData) {
+                    this.setState({ status: '404 please search again' });
+                    this.setState({ characteristics: {} });
+                } else {
+                    this.setState({ characteristics: jsonData });
+                    this.setState({ status: "" });
+                }
+            })
+    }
+
+    getLink = (search, radio) => {
+        return `https://swapi.co/api/${radio}/${search}/?format=json`;
     }
 
     render() {
         return (
             <form action="" method="get">
+                <label htmlFor="">Select an option:</label>
                 <div id="radioSelection">
                     <div className="radioItems">
                         <label htmlFor="">Planets:</label>
                         <input type="radio" name="selection" value="planets" id="" />
-                        <label htmlFor="">Spaceships:</label>
-                        <input type="radio" name="selection" value="spaceships" id="" />
+                        <label htmlFor="">Starships:</label>
+                        <input type="radio" name="selection" value="starships" id="" />
                         <label htmlFor="">Vehicles:</label>
                         <input type="radio" name="selection" value="vehicles" id="" />
                         <label htmlFor="">People:</label>
@@ -46,12 +73,13 @@ class Form extends Component {
                 </div>
 
                 <div>
+                    <label htmlFor="">Enter a number:</label>
                     <input type="text" name="" id="searchField" placeholder="Enter info" />
                     <input type="button" value="Search" id="searchButton" onClick={this.search_button_click} />
                 </div>
 
                 <hr />
-                <Result />
+                <Result characteristics={this.state.characteristics} status={this.state.status} />
             </form>
         );
     }
