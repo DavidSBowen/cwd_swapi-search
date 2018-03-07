@@ -11,9 +11,6 @@ class Result extends Component {
             objValues.push(ch[i]);
         }
 
-        console.log(objKeys);
-        console.log(objValues);
-
         let itemsHere = objKeys.map((a, b) => {
             return (<ListItem
                 key={b}
@@ -23,10 +20,6 @@ class Result extends Component {
         });
 
         return itemsHere;
-
-        // for (let i = 0; i < objKeys.length; i++){
-        //     <ListItem key2={objKeys[i]} value={objValues[i]} />;
-        // }
     }
 
     render() {

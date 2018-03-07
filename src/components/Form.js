@@ -13,24 +13,39 @@ class Form extends Component {
         }
     }
 
+    verifySearchField = (info) => {
+        if (info.length > 0 && !isNaN(parseInt(info, 10))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     search_button_click = () => {
         let searchField = document.getElementById('searchField').value;
         let radioElements = document.getElementsByName('selection');
         let selectedElement = '';
 
-        for (let i = 0; i < radioElements.length; i++) {
-            if (radioElements[i].checked) {
-                selectedElement = radioElements[i].value;
+        if (this.verifySearchField(searchField)) {
+            for (let i = 0; i < radioElements.length; i++) {
+                if (radioElements[i].checked) {
+                    selectedElement = radioElements[i].value;
+                }
             }
+            if (selectedElement === '') {
+                this.setState({ status: "Please select an option" });
+                this.setState({ characteristics: {} });
+            } else {
+                let link = this.getLink(searchField, selectedElement);
+                this.retrieveData(link);
+            }
+        } else {
+            this.setState({ status: "Please enter a whole number in the search field" });
+            this.setState({ characteristics: {} });
         }
-
-        let link = this.getLink(searchField, selectedElement);
-
-        this.retrieveData(link);
     }
 
     retrieveData = (link) => {
-        console.log(link);
         fetch(link)
             .then((response) => {
                 if (response.status >= 200 && response.status < 400) {
@@ -38,7 +53,7 @@ class Form extends Component {
                 }
             }).then((jsonData) => {
                 if (!jsonData) {
-                    this.setState({ status: '404 please search again' });
+                    this.setState({ status: 'Please try another number' });
                     this.setState({ characteristics: {} });
                 } else {
                     this.setState({ characteristics: jsonData });

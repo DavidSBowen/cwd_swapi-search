@@ -1,7 +1,5 @@
 TODO:
 
-Protect against invalid inputs.
-Ensure radio has been selected.
 Page CSS.
 ...?...
 
